@@ -31,6 +31,7 @@ CHAT_MODEL = config.get('MODEL', 'CHAT_MODEL')
 MODEL_DOWNLOADED = config.getboolean('MODEL', 'MODEL_DOWNLOADED')  # Convert to boolean
 UPLOAD_FILE = config.getboolean('MODEL', 'UPLOAD_FILE')  # Convert to boolean
 REFERENCE_FILE = config.get('MODEL', 'REFERENCE_FILE')
+EVALUATION_FILE = config.get('MODEL', 'EVALUATION_FILE')
 SIMILARITY_THRESHOLD = config.get('SETTINGS', 'SIMILARITY_THRESHOLD')
 OPEN_AI_TEMP = config.get('SETTINGS', 'OPEN_AI_TEMP')
 OPEN_AI_HISTORY = config.get('SETTINGS', 'OPEN_AI_HISTORY')
@@ -124,6 +125,7 @@ if __name__ == "__main__":
     txt_filename = "output/txt_output/text_response.txt"
     pdf_filename = "output/pdf_output/text_response.pdf"
     reference_file = REFERENCE_FILE
+    evaluation_file = EVALUATION_FILE
 
     try:
         workspace = api.create_workspace(
@@ -154,13 +156,13 @@ if __name__ == "__main__":
             file.write(response_text)
 
         logger.info(f"Text file saved: {txt_filename}")
-        txt_to_pdf(txt_filename, pdf_filename)
+        # txt_to_pdf(txt_filename, pdf_filename)
 
         logger.info(f"PDF file saved: {pdf_filename}")
         timestamp = datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
 
-        bleu.bleu_calculation(pdf_filename, reference_file)
-        rouge.rouge_calculation(pdf_filename, reference_file)
+        bleu.bleu_calculation(pdf_filename, evaluation_file)
+        rouge.rouge_calculation(pdf_filename, evaluation_file)
         
         logger.info(f"Delete workspace")
         api.delete_workspace(WORKSPACE_SLUG)
